@@ -86,7 +86,11 @@ if(isset($_GET['update']) && !isset($_POST['init_booru'])){
 				}
 				$db->insert($item);
 			}
-			echo 'Update done';
+			if($start>2){
+				echo 'Update done';
+			}else{
+				echo 'No news';
+			}
 		}
 	}
 }

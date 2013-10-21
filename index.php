@@ -50,7 +50,7 @@ function mirror_page($booru_name, $config){
 <head>
 <meta charset="utf-8">
 <title>{$config[$booru_name]['name']}</title>
-<style type="text/css">body{padding:1em;}a{color:red;text-decoration:none;}table{border:1px dotted #FFCC00;background-color:#FFFFEE;}img.list{max-height:200px;margin:2px;border:1px solid black;} h2 {font-size:small}</style>
+<style type="text/css">body{padding:1em;}a{color:red;text-decoration:none;}table{border:1px dotted #FFCC00;background-color:#FFFFEE;}img.list{max-height:200px;margin:2px;border:1px solid black;} h2 {font-size:small} .info{background-color:#444444;padding:15px;text-align:center;}</style>
 <link rel="alternate" type="application/atom+xml" title="ATOM 20 last posts" href="http://127.0.0.1/DMME/?feed">
 </head>
 <body>
@@ -71,6 +71,7 @@ function mirror_page($booru_name, $config){
 <input type="submit" value="OK">
 </form>
 <br>
+<div id="need_update" style="display:none" class="info"><a href="./">Update done. You can reload this page to see new pictures.</a></div>
 EOF;
 
 	if($page>1){
@@ -90,12 +91,20 @@ EOF;
 	echo "<br/>".$change_page;
 
 	if($config[$booru_name]['enable']){
-		echo '<iframe width="1" height="1" src="../../bridge/'.$booru_name.'.php?update" style="display:none">';
+		echo <<<EOF
+<script type="text/javascript">
+ function iframe_loaded(){
+ 	if(document.getElementById('iframe').contentWindow.document.body.innerHTML=="Update done"){
+		document.getElementById('need_update').setAttribute('style','');
+ 	}
+
+}
+</script>
+<iframe id="iframe" width="1" height="1" src="../../bridge/{$booru_name}.php?update" style="display:none" onload="iframe_loaded();">
+EOF;
 	}
+
 	echo '</body></html>';
-
-	
-
 }
 
 function show_image($booru_name, $config){
