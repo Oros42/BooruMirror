@@ -168,10 +168,10 @@ function show_image($booru_name, $config){
 <input type="submit" value="OK">
 </form>
 <br>
-<a href="./img/{$data['img_name']}"><img class="post" alt="{$data['tags']}" src="./img/{$data['img_name']}" width="1000px"></a><table>
+<table style="float:left">
 <tr>
  <td class="meta">remote:</td>
-  <td id="remote"><a href="{$config[$booru_name]['url']}">{$config[$booru_name]['name']}</a></td>
+  <td id="remote" style="width:300px"><a href="{$config[$booru_name]['url']}">{$config[$booru_name]['name']}</a></td>
 </tr>
 <tr>
  <td class="meta">id:</td>
@@ -242,6 +242,7 @@ echo <<<EOF
 	<td id="json"><a href="./?id=169973&amp;raw">169973.json</a></td>
 </tr>
 </table>
+<a href="./img/{$data['img_name']}" style="float:left;position: absolute;"><img class="post" alt="{$data['tags']}" src="./img/{$data['img_name']}" width="1000px"></a>
 </body></html>
 EOF;
 
