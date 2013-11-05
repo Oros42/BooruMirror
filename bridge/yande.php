@@ -6,7 +6,7 @@ $booru_dir='yande';
 
 
 // Info : If this booru take too much place,
-// you can switch png to jpg ligne 42-44
+// change $enable_png to false.
 $enable_png=true;
 
 if(isset($_GET['update']) && !isset($_POST['init_booru'])){
@@ -74,14 +74,9 @@ if(isset($_GET['update']) && !isset($_POST['init_booru'])){
 								$a=explode('x',substr($data->item(2)->nodeValue, 6));
 								$item['width']=$a[0];
 								$item['height']=$a[1];
-								$a=$data->item(3)->getElementsByTagName('a');
-								if(!empty($a) && $a->length >0){
-									$item['source']=$a->item(0)->getAttribute('href');
-								}else{
-									$item['source']= substr($data->item(3)->nodeValue, 9);
-								}
-								$item['rating']=substr($data->item(4)->nodeValue, 8);
-								$a=$data->item(5)->getElementsByTagName('span');
+								$item['source']='';
+								$item['rating']=substr($data->item(3)->nodeValue, 8);
+								$a=$data->item(4)->getElementsByTagName('span');
 								if(!empty($a) && $a->length >0){
 									$item['score']=$a->item(0)->nodeValue;
 								}else{
