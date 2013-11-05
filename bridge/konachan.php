@@ -9,7 +9,8 @@ if(isset($_GET['update']) && !isset($_POST['init_booru'])){
 	$config = get_config();
 	if(isset($config[$booru_dir]) && $config[$booru_dir]['enable']) {
 		$dom = new DOMDocument();
-		if($dom->loadXML(proxy_file_get_contents($site_rss))){
+		$data=proxy_file_get_contents($site_rss);
+		if(!empty($data) && $dom->loadXML($data)){
 			$flux_rss = $dom->getElementsByTagName('link');
 			if($flux_rss->length > 0){
 				require_once __DIR__.'/../database.php';
@@ -94,6 +95,8 @@ if(isset($_GET['update']) && !isset($_POST['init_booru'])){
 			}else{
 				echo 'error';
 			}
+		}else{
+			echo "Networking error ! Cant't access to $site_rss";
 		}
 	}
 }

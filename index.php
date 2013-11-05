@@ -73,7 +73,7 @@ function mirror_page($booru_name, $config){
 <br>
 <div id="need_update" style="display:none" class="info"><a href="./">Update done. You can reload this page to see new pictures.</a></div>
 EOF;
-
+	$change_page='';
 	$nb_page = (int) ( $nb_post/20 + ($nb_post%20>0?1:0) );
 	if($nb_page>1){
 		if($page>1){

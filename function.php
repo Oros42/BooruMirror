@@ -4,20 +4,26 @@
 //define('PROXY_IP', '127.0.0.1:8118');
 
 function proxy_file_get_contents($url, $proxy_ip='') {
-	$c = curl_init();
-	if($proxy_ip!=''){
-		curl_setopt($c, CURLOPT_PROXY, $proxy_ip);
-	}elseif(defined('PROXY_IP') && PROXY_IP!= ''){
-		curl_setopt($c, CURLOPT_PROXY, PROXY_IP);
+	if(function_exists('curl_init')){
+		$c = curl_init();
+		if($proxy_ip!=''){
+			curl_setopt($c, CURLOPT_PROXY, $proxy_ip);
+		}elseif(defined('PROXY_IP') && PROXY_IP!= ''){
+			curl_setopt($c, CURLOPT_PROXY, PROXY_IP);
+		}
+		curl_setopt($c, CURLOPT_URL, $url);
+		curl_setopt($c, CURLOPT_HEADER, false);
+		curl_setopt($c, CURLOPT_USERAGENT, 'Mozilla/5.0');
+		curl_setopt($c, CURLOPT_SSL_VERIFYPEER, false);
+		curl_setopt($c, CURLOPT_RETURNTRANSFER, 1);
+		curl_setopt($c, CURLOPT_FOLLOWLOCATION, 1);
+		$r= curl_exec($c);
+		curl_close($c); 
+		return $r;
+	}else{
+		return file_get_contents($url);
 	}
-	curl_setopt($c, CURLOPT_URL, $url);
-	curl_setopt($c, CURLOPT_HEADER, false);
-	curl_setopt($c, CURLOPT_USERAGENT, 'Mozilla/5.0');
-	curl_setopt($c, CURLOPT_SSL_VERIFYPEER, false);
-	curl_setopt($c, CURLOPT_RETURNTRANSFER, 1); 
-	$r= curl_exec($c);
-	curl_close($c); 
-	return $r;
+	
 }
 
 
@@ -40,7 +46,7 @@ function get_config(){
 					if(!file_exists(__DIR__.'/mirror/'.$value)){
 						mkdir(__DIR__.'/mirror/'.$value.'/img', 0700, true);
 						mkdir(__DIR__.'/mirror/'.$value.'/thumb', 0700, true);
-						file_put_contents(__DIR__.'/mirror/'.$value.'/index.php', '<?php $use_booru="'.$value.'"; require_once "../../index.php"; ?>');
+						file_put_contents(__DIR__.'/mirror/'.$value.'/index.php', '<?php require_once "../../index.php"; ?>');
 					}
 					include __DIR__.'/bridge/'.$value.'.php';
 					$config[$value]['enable']=true;
