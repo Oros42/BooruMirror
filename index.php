@@ -74,14 +74,37 @@ function mirror_page($booru_name, $config){
 <div id="need_update" style="display:none" class="info"><a href="./">Update done. You can reload this page to see new pictures.</a></div>
 EOF;
 
-	if($page>1){
-		$change_page='<a href="./?page='.(($page-1)).'">&larr; newer</a>';
-	}else{
-		$change_page='<b>page '.$page.'</b>';
+	$nb_page = (int) ( $nb_post/20 + ($nb_post%20>0?1:0) );
+	if($nb_page>1){
+		if($page>1){
+			$change_page='<a href="./?page='.($page-1).'">&larr; newer</a>';
+			if($page>11){
+				$change_page.=' | <a href="./?page=1">1</a>';
+				if($page>12){
+					$change_page.='| ... ';
+				}
+			}
+		}
+		$end=$page+11;
+		$start=$page>10?$page-10:1;
+		for($i=$start; $i<=$nb_page && $i <$end; $i++){
+			if($i==$page){
+				$change_page.=' | '.$i;	
+			}else{
+				$change_page.=' | <a href="./?page='.$i.'">'.$i.'</a>';	
+			}
+			
+		}
+		if($page<$nb_page-1){
+			if($i<$nb_page){
+				$change_page.='| ... | <a href="./?page='.$nb_page.'">'.$nb_page.'</a>';		
+			}
+			$change_page.=' | <a href="./?page='.($page+1).'">older &rarr;</a>';
+		}		
 	}
-	if(count($data) > 19){
-		$change_page.=' | <a href="./?page='.(($page+1)).'">older &rarr;</a>';
-	} 
+
+
+
 	echo $change_page."<br/>";
 	if(!empty($data)){
 		foreach ($data as $item) {

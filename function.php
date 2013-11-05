@@ -1,7 +1,7 @@
 <?php
 
 // If you have a proxy like TOR, uncomment this line and set IP:Port
-define('PROXY_IP', '127.0.0.1:8118');
+//define('PROXY_IP', '127.0.0.1:8118');
 
 function proxy_file_get_contents($url, $proxy_ip='') {
 	$c = curl_init();
