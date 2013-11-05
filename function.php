@@ -1,5 +1,26 @@
 <?php
 
+// If you have a proxy like TOR, uncomment this line and set IP:Port
+define('PROXY_IP', '127.0.0.1:8118');
+
+function proxy_file_get_contents($url, $proxy_ip='') {
+	$c = curl_init();
+	if($proxy_ip!=''){
+		curl_setopt($c, CURLOPT_PROXY, $proxy_ip);
+	}elseif(defined('PROXY_IP') && PROXY_IP!= ''){
+		curl_setopt($c, CURLOPT_PROXY, PROXY_IP);
+	}
+	curl_setopt($c, CURLOPT_URL, $url);
+	curl_setopt($c, CURLOPT_HEADER, false);
+	curl_setopt($c, CURLOPT_USERAGENT, 'Mozilla/5.0');
+	curl_setopt($c, CURLOPT_SSL_VERIFYPEER, false);
+	curl_setopt($c, CURLOPT_RETURNTRANSFER, 1); 
+	$r= curl_exec($c);
+	curl_close($c); 
+	return $r;
+}
+
+
 function get_config(){
 	if(!file_exists(__DIR__.'/config.json')){
 		// setup

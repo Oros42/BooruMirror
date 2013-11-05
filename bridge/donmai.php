@@ -9,7 +9,7 @@ if(isset($_GET['update']) && !isset($_POST['init_booru'])){
 	$config = get_config();
 	if(isset($config[$booru_dir]) && $config[$booru_dir]['enable']) {
 		$dom = new DOMDocument();
-		if($dom->load($site_rss)){
+		if($dom->loadXML(proxy_file_get_contents($site_rss))){
 			$flux_rss = $dom->getElementsByTagName('entry');
 			if($flux_rss->length > 0){
 				require_once __DIR__.'/../database.php';
@@ -33,7 +33,7 @@ if(isset($_GET['update']) && !isset($_POST['init_booru'])){
 					$item['page_url']=$flux_rss->item($i)->getElementsByTagName('a')->item(0)->getAttribute('href'); // FIXME some time : error Call to a member function getElementsByTagName()
 					$item['file_id']=substr($item['page_url'], strrpos($item['page_url'], '/')+1);
 					$dom2 = new DOMDocument();
-					if(@$dom2->loadHTMLFile($item['page_url'], LIBXML_ERR_NONE)){ // get page
+					if(@$dom2->loadHTML(proxy_file_get_contents($item['page_url']), LIBXML_ERR_NONE)){ // get page
 						if($dom2->getElementById('image')){ // if not deleted
 							$data = $dom2->getElementById('image-resize-link');
 							if(!empty($data)){
@@ -50,7 +50,7 @@ if(isset($_GET['update']) && !isset($_POST['init_booru'])){
 								}else{
 									$item['img_name']=htmlentities(substr($data, strrpos($data, "/")+1));
 								}
-								file_put_contents(__DIR__.'/../mirror/'.$booru_dir.'/img/'.$item['img_name'], file_get_contents($item['img_url']));
+								file_put_contents(__DIR__.'/../mirror/'.$booru_dir.'/img/'.$item['img_name'], proxy_file_get_contents($item['img_url']));
 							}
 							// get stats
 							$data = $dom2->getElementById('sidebar')->childNodes->item(4)->getElementsByTagName('li');
