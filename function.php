@@ -84,4 +84,47 @@ function dir_size($dir){
 	return $s[0];
 }
 
+
+function make_thumb($booru_dir, $img_name){
+	$item['file_size'] = filesize(__DIR__.'/mirror/'.$booru_dir.'/img/'.$img_name);
+	$getimagesize = getimagesize(__DIR__.'/mirror/'.$booru_dir.'/img/'.$img_name);
+	$width = $getimagesize['0'];
+	$height = $getimagesize['1']; 
+	$item['checksum'] = md5_file(__DIR__.'/mirror/'.$booru_dir.'/img/'.$img_name);
+	$item['checksum_sha'] = sha1_file(__DIR__.'/mirror/'.$booru_dir.'/img/'.$img_name);
+	switch ($getimagesize['mime']) {
+		case 'image/jpeg':
+			$im = imagecreatefromjpeg(__DIR__.'/mirror/'.$booru_dir.'/img/'.$img_name);
+			break;
+		case 'image/png':
+			$im = imagecreatefrompng(__DIR__.'/mirror/'.$booru_dir.'/img/'.$img_name);
+			break;
+		
+		case 'image/gif':
+			$im = imagecreatefromgif(__DIR__.'/mirror/'.$booru_dir.'/img/'.$img_name);
+			break;
+
+		default:
+			# HELP
+			$im = null;
+			break;
+	}
+	if($im){
+		$newheight = 200;
+		$ratio_orig = $width/$height;
+		$newwidth = $newheight*$ratio_orig;
+		$tmp_img = imagecreatetruecolor($newwidth, $newheight);
+		imagecopyresampled($tmp_img, $im, 0, 0, 0, 0, $newwidth, $newheight, $width, $height);
+		if($getimagesize['mime'] == 'image/gif'){ // little watermark for GIF images (since the output thumbnail isn't animated)
+			$textcolor = imagecolorallocate($tmp_img, 255, 0, 0);$bgcolor = imagecolorallocate($tmp_img, 255, 255, 255);
+			imagefilledrectangle($tmp_img, 0, 0, 30, 20, $bgcolor);
+			imagestring($tmp_img, 6, 2, 1, 'GIF', $textcolor);
+		}
+		imageinterlace($tmp_img, true);
+		imagejpeg($tmp_img, __DIR__.'/mirror/'.$booru_dir.'/thumb/'.substr($img_name, 0, strrpos($img_name, '.')).'.jpg', 60);
+		imagedestroy($im);
+		imagedestroy($tmp_img);
+	}
+	return $item;
+}
 ?>

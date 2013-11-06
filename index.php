@@ -108,7 +108,14 @@ EOF;
 	echo $change_page."<br/>";
 	if(!empty($data)){
 		foreach ($data as $item) {
-			echo '<a href="./?id='.$item['file_id'].'"><img class="list" title="'.$item['tags'].'" alt="'.$item['file_id'].'" src="./img/'.$item['img_name'].'" max-height="300px"></a>';
+			echo '<a href="./?id='.$item['file_id'].'"><img class="list" title="'.$item['tags'].'" alt="'.$item['file_id'].'" ';
+			$thumb = './thumb/'.substr($item['img_name'], 0, strrpos($item['img_name'], '.')).'.jpg';
+			if(file_exists($thumb)){
+				echo 'src="'.$thumb.'"';
+			}else{
+				echo 'src="./img/'.$item['img_name'].'"';
+			}
+			echo ' max-height="200px"></a>';
 		}
 	}
 	echo "<br/>".$change_page;
@@ -220,10 +227,6 @@ echo <<<EOF
 <tr>
 	<td class="meta">Score:</td>
 	<td id="score">{$data['score']}</td>
-</tr>
-<tr>
-	<td class="meta">Format:</td>
-	<td id="format"></td>
 </tr>
 <tr>
 	<td class="meta">Filesize:</td>

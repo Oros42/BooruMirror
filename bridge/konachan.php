@@ -85,6 +85,7 @@ if(isset($_GET['update']) && !isset($_POST['init_booru'])){
 							}
 						}
 					}
+					$item=array_merge($item, make_thumb($booru_dir, $item['img_name']));
 					$db->insert($item);
 				}
 				if($start>2){
