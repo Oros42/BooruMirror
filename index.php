@@ -249,9 +249,6 @@ echo <<<EOF
 <a href="./img/{$data['img_name']}" style="float:left;position: absolute;"><img class="post" alt="{$data['tags']}" src="./img/{$data['img_name']}" width="1000px"></a>
 </body></html>
 EOF;
-
-print_r($data);
-
 }
 
 function get_raw($booru_name, $config){
