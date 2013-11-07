@@ -84,11 +84,19 @@ function dir_size($dir){
 	return $s[0];
 }
 
+// file size formatting ( bytes -> megabytes )
+function itemsize($filesize){
+	$filesize = (int)$filesize;
+	$filesize = round($filesize/1048576, 2);
+	return $filesize;
+}
+
 
 function make_thumb($booru_dir, $img_name){
+	$item=array();
 	$item['file_size'] = filesize(__DIR__.'/mirror/'.$booru_dir.'/img/'.$img_name);
 	$item['checksum'] = md5_file(__DIR__.'/mirror/'.$booru_dir.'/img/'.$img_name);
-	$item['checksum_sha'] = sha1_file(__DIR__.'/mirror/'.$booru_dir.'/img/'.$img_name);
+	$item['checksum_sha1'] = sha1_file(__DIR__.'/mirror/'.$booru_dir.'/img/'.$img_name);
 	if(function_exists('imagecreatefromjpeg')){
 		$getimagesize = getimagesize(__DIR__.'/mirror/'.$booru_dir.'/img/'.$img_name);
 		$width = $getimagesize['0'];

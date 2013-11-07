@@ -205,6 +205,7 @@ EOF;
 			}			
 		}
 	}
+	$data['file_size']=itemsize($data['file_size']);
 echo <<<EOF
 </ul></td>
 </tr>
@@ -230,15 +231,15 @@ echo <<<EOF
 </tr>
 <tr>
 	<td class="meta">Filesize:</td>
-	<td id="filesize"></td>
+	<td id="file_size">{$data['file_size']} Mo</td>
 </tr>
 <tr>
 	<td class="meta">md5:</td>
-	<td id="checksum"></td>
+	<td id="checksum">{$data['checksum']}</td>
 </tr>
 <tr>
 	<td class="meta">sha1:</td>
-	<td id="checksum_sha1"></td>
+	<td id="checksum_sha1">{$data['checksum_sha1']}</td>
 </tr>
 <tr>
 	<td class="meta">JSON data:</td>
@@ -248,6 +249,8 @@ echo <<<EOF
 <a href="./img/{$data['img_name']}" style="float:left;position: absolute;"><img class="post" alt="{$data['tags']}" src="./img/{$data['img_name']}" width="1000px"></a>
 </body></html>
 EOF;
+
+print_r($data);
 
 }
 
