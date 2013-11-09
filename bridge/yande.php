@@ -12,7 +12,7 @@ $enable_png=true;
 if(isset($_GET['update']) && !isset($_POST['init_booru'])){
 	require_once __DIR__.'/../function.php';
 	$config = get_config();
-	if(isset($config[$booru_dir]) && $config[$booru_dir]['enable']) {
+	if(isset($config[$booru_dir]) && $config[$booru_dir]['enable'] && is_update_unlock($booru_dir)) {
 		$dom = new DOMDocument();
 		$data=proxy_file_get_contents($site_rss);
 		if(!empty($data) && $dom->loadXML($data)){

@@ -90,14 +90,14 @@ class Database
 		foreach ($this->fields as $field=>$type) {
 			if(isset($item[$field])){
 				$list_fields.=$field.", ";
-				$list_values.="'".str_replace("'", "&quot;", $item[$field])."', ";
+				$list_values.="'".htmlspecialchars($item[$field])."', ";
 			}
 		}
 		$this->db->exec('INSERT OR IGNORE INTO database (id, '.$list_fields.'created_at) VALUES (NULL, '.$list_values.time().');');
 	}
 
 	// fetch items for 1 page
-	public function listByPage($page = 1) {
+	public function list_by_page($page = 1) {
 		$nb = 20;
 		$begin = ((int)$page - 1) * $nb;
 		return $this->query('SELECT * FROM database ORDER BY id DESC LIMIT '.(int)$begin.','.(int)$nb.';');
@@ -130,6 +130,47 @@ class Database
 		}else{
 			return array();
 		}
+	}
+
+	public function get_by_tag($tags, $page = 1) {
+		$nb = 20;
+		$begin = ((int)$page - 1) * $nb;
+		$tags=explode(' ', $tags);
+		if(!empty($tags)){
+			$q='';
+			foreach ($tags as $tag) {
+				if(!empty($tag)){
+					$q.=" AND tags LIKE '%". htmlspecialchars($tag)."%'";
+				}
+			}
+			if($q!=''){
+				return $this->query("SELECT * FROM database WHERE ".substr($q, 5)." ORDER BY id DESC LIMIT ".(int)$begin.','.(int)$nb.';');
+			}else{
+				return array();
+			}		
+		}else{
+			return array();
+		}
+	}
+
+	public function get_nb_post_by_tag($tags){
+		$tags=explode(' ', $tags);
+		if(!empty($tags)){
+			$q='';
+			foreach ($tags as $tag) {
+				if(!empty($tag)){
+					$q.=" AND tags LIKE '%". htmlspecialchars($tag)."%'";
+				}
+			}
+			if($q!=''){
+				$r=$this->query("SELECT count(id) as `c` FROM database WHERE ".substr($q, 5).";");
+				return $r[0]['c'];
+			}else{
+				return 0;
+			}		
+		}else{
+			return 0;
+		}		
 	}
 }
 ?>

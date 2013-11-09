@@ -139,4 +139,17 @@ function make_thumb($booru_dir, $img_name){
 	}
 	return $item;
 }
+
+function is_update_unlock($booru_dir){
+	$lockfile=__DIR__.'/mirror/'.$booru_dir.'/.update_lock';
+	if (file_exists($lockfile)){
+		if(filemtime($lockfile) > time()-240) {
+			return false;
+		} else {
+			unlink($lockfile);
+		}
+	}
+	file_put_contents($lockfile, date(DATE_RFC822));
+	return true;
+}
 ?>

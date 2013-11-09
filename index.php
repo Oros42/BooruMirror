@@ -41,9 +41,18 @@ function mirror_page($booru_name, $config){
 	}else{
 		$page=1;
 	}
-	$data=$db->listByPage($page);
+	$data=$db->list_by_page($page);
 	$nb_post=$db->get_nb_post();
+	show_mirror_page($booru_name, $config, $data, $nb_post, $page);
+}
 
+function show_mirror_page($booru_name, $config, $data, $nb_post, $page){
+	$param='';
+	$search_tag='';
+	if(!empty($_GET['s'])){
+		$search_tag=' with tag <strong>'.htmlspecialchars($_GET['s']).'</strong>';
+		$param='&s='.htmlspecialchars($_GET['s']);
+	}
 	echo <<<EOF
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
@@ -61,9 +70,8 @@ function mirror_page($booru_name, $config){
 <h2>BooruMirror is a free/open-source booru mirroring system. All the content below is automatically fetched and mirrored. Warning: the content is often explicit and NSFW.</h2>
 <a href="./?feed">
 <img alt="rss" width="13" height="13" src="data:image/gif;base64,R0lGODlhDQANAOYAAAAAAP/////63f/yzP/er//04//brP/t1f/Yqv+0ZP++d//Ii//Sn/+oU//Eh//Gjv/LlP95AP99Av98BP99BP9/B/99Cv+FFf+cP//Hkv/Urf9zAP91AP93AP95Bf94B/+IJf9sAP9vAP9xAP5yBv91B/51CP9/Hv+3gf9pAP9qAP9rAP5sBv5vDP91Ev99IPF2H/+VSuqOTv9gAP9lAftnCf9sDO5nFe1qGP9cAP9eAPxeBPllEO1nHu1qHvFzKeiOW/+wgv+7lf/Jq/9ZAPtWAPNRAPdYCvBZCvNfEupcFe1hF/x/QfxQAPlRAPZNAO9NAOpbG/u3lv/g0vtIAPZIAPNKAOxOCelRFO1VFetVGvNqMO6AU/ZEAPI/AOo/AOg+AOxFCehPF+ZUIOc6AOlDC+5pQN1vSu6BX8+aieI+EOpKHOwxAOotAOcsAOMtANwsAOJBF+Z3W9wqBdw0EtgmB9g7HtQdAOV9b9UUANEXANcgDeBRQf///wAAAAAAACH5BAEAAH0ALAAAAAANAA0AAAeogH1nZF9QSDUsJCYeMH1pZWFHVV1EKiIbFB0yY2xDAQcoLjMjExURLVheQgGsAQobEhMrPFFOOzYvEKwEIyo6SUpOGgEPGxesGU1PWUtEDK0YFqxMbWI9KiolDqwnMQFTbmo+IR8NEgkBBU+sa3A4IQgBAzkCAVtSAXJ3NxwLAQZUggTggiYAHj1AIkQAQcOKFjNx6PDZY6fPjxRFjFwB82ZOnTx0+gQCADs%3D"> feed</a> | <a href="./?sitemap">sitemap</a> | <a href="./?id=random">random</a> | <a href="./?id=random&amp;flow">post flow</a>
-<br>$nb_post mirrored posts from <b>
-<a href="{$config[$booru_name]['url']}">{$config[$booru_name]['name']}</a>
-</b>
+<br>$nb_post mirrored posts from <strong><a href="{$config[$booru_name]['url']}">{$config[$booru_name]['name']}</a></strong>
+{$search_tag}
 <br>
 <br>
 <form method="get" action="./">
@@ -91,15 +99,15 @@ EOF;
 			if($i==$page){
 				$change_page.=' | '.$i;	
 			}else{
-				$change_page.=' | <a href="./?page='.$i.'">'.$i.'</a>';	
+				$change_page.=' | <a href="./?page='.$i.$param.'">'.$i.'</a>';	
 			}
 			
 		}
 		if($page<$nb_page-1){
 			if($i<$nb_page){
-				$change_page.='| ... | <a href="./?page='.$nb_page.'">'.$nb_page.'</a>';		
+				$change_page.='| ... | <a href="./?page='.$nb_page.$param.'">'.$nb_page.'</a>';		
 			}
-			$change_page.=' | <a href="./?page='.($page+1).'">older &rarr;</a>';
+			$change_page.=' | <a href="./?page='.($page+1).$param.'">older &rarr;</a>';
 		}		
 	}
 
@@ -267,8 +275,15 @@ function get_sitemap($booru_name, $config){
 }
 
 function find_by_tag($booru_name, $config){
-	echo '<a href=".">Back</a><br/>';
-	echo "TODO";
+	$db=new Database($booru_name);
+		if(!empty($_GET['page'])){
+		$page=(int) $_GET['page'];
+	}else{
+		$page=1;
+	}
+	$data=$db->get_by_tag($_GET['s'], $page);
+	$nb_post=$db->get_nb_post_by_tag($_GET['s']);
+	show_mirror_page($booru_name, $config, $data, $nb_post, $page);
 }
 
 
