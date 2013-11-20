@@ -29,7 +29,7 @@ if(isset($_GET['update']) && !isset($_POST['init_booru'])){
 				}else{
 					$start=$flux_rss->length-1;
 				}
-				for($i=$start; $i>=0;$i--){
+				for($i=$start; $i>=0 && is_time_limit_not_reached();$i--){
 					$item=array();
 					$item['page_url']=$flux_rss->item($i)->getElementsByTagName('a')->item(0)->getAttribute('href'); // FIXME some time : error Call to a member function getElementsByTagName()
 					$item['file_id']=substr($item['page_url'], strrpos($item['page_url'], '/')+1);
@@ -88,6 +88,7 @@ if(isset($_GET['update']) && !isset($_POST['init_booru'])){
 					$item=array_merge($item, make_thumb($booru_dir, $item['img_name']));
 					$db->insert($item);
 				}
+				update_lock($booru_dir, $i<0);
 				if($start>=0){
 					echo 'Update done';
 				}else{

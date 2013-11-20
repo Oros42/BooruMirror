@@ -4,7 +4,6 @@ $site_rss='https://yande.re/post/piclens?page=1&tags=';
 $booru_name='Yande.re';
 $booru_dir='yande';
 
-
 // Info : If this booru take too much place,
 // change $enable_png to false.
 $enable_png=true;
@@ -34,7 +33,7 @@ if(isset($_GET['update']) && !isset($_POST['init_booru'])){
 				}else{
 					$start=$flux_rss->length-1;
 				}
-				for($i=$start; $i>2;$i--){
+				for($i=$start; $i>2 && is_time_limit_not_reached();$i--){
 					$item=array();
 					$item['page_url']=$flux_rss->item($i)->nodeValue;
 					$item['file_id']=substr($item['page_url'], strrpos($item['page_url'], '/')+1);
@@ -98,6 +97,7 @@ if(isset($_GET['update']) && !isset($_POST['init_booru'])){
 					$item=array_merge($item, make_thumb($booru_dir, $item['img_name']));
 					$db->insert($item);
 				}
+				update_lock($booru_dir, $i==2);
 				if($start>2){
 					echo 'Update done';
 				}else{

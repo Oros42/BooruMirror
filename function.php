@@ -1,4 +1,8 @@
 <?php
+if(ini_get('max_execution_time')<31){
+	set_time_limit(120);
+}
+define('LIMIT_TIME',time()+ini_get('max_execution_time')-5); // keep 5 seconds to stop
 
 // If you have a proxy like TOR, uncomment this line and set IP:Port
 //define('PROXY_IP', '127.0.0.1:8118');
@@ -24,6 +28,11 @@ function proxy_file_get_contents($url, $proxy_ip='') {
 		return file_get_contents($url);
 	}
 	
+}
+
+
+function is_time_limit_not_reached(){
+	return LIMIT_TIME > time();
 }
 
 
@@ -151,5 +160,11 @@ function is_update_unlock($booru_dir){
 	}
 	file_put_contents($lockfile, date(DATE_RFC822));
 	return true;
+}
+
+function update_lock($booru_dir, $is_update_finish){
+	if(!$is_update_finish){
+		unlink(__DIR__.'/mirror/'.$booru_dir.'/.update_lock');
+	}
 }
 ?>

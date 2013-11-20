@@ -85,15 +85,17 @@ class Database
 	}
 
 	public function insert($item) {
-		$list_fields="";
-		$list_values="";
-		foreach ($this->fields as $field=>$type) {
-			if(isset($item[$field])){
-				$list_fields.=$field.", ";
-				$list_values.="'".htmlspecialchars($item[$field])."', ";
+		if(!empty($item['file_id']) && !empty($item['img_name'])){
+			$list_fields="";
+			$list_values="";
+			foreach ($this->fields as $field=>$type) {
+				if(isset($item[$field])){
+					$list_fields.=$field.", ";
+					$list_values.="'".htmlspecialchars($item[$field])."', ";
+				}
 			}
+			$this->db->exec('INSERT OR IGNORE INTO database (id, '.$list_fields.'created_at) VALUES (NULL, '.$list_values.time().');');
 		}
-		$this->db->exec('INSERT OR IGNORE INTO database (id, '.$list_fields.'created_at) VALUES (NULL, '.$list_values.time().');');
 	}
 
 	// fetch items for 1 page
